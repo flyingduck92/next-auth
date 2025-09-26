@@ -1,5 +1,6 @@
 'use server'
 
+import db from '@/db/drizzle'
 import { passwordMatchSchema } from '@/validation/passwordMatchSchema'
 import z from 'zod'
 
@@ -14,6 +15,9 @@ export const registerUser = async (
     passwordConfirm: string
   }) => {
 
+  // connect to db
+  const result = await db.select()
+
   const newUserSchema = z.object({
     email: z.email(),
   }).and(passwordMatchSchema)
@@ -26,5 +30,7 @@ export const registerUser = async (
       message: newUserValidation.error.issues[0]?.message ?? 'An error occurred',
     }
   }
+
+
 
 }
