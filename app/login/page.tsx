@@ -8,6 +8,7 @@ import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { passwordSchema } from '@/validation/passwordSchema'
+import loginUser from './actions'
 
 const formSchema = z
   .object({
@@ -26,7 +27,12 @@ const Login = () => {
   })
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data)
+    await loginUser({
+      email: data.email,
+      password: data.password
+    })
+
+
   }
 
   return (
