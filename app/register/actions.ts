@@ -36,9 +36,25 @@ export const registerUser = async (
   const saltRound = 10
   const hashedPassword = await hash(password, saltRound)
 
-  await db.insert(users).values({
-    email,
-    password: hashedPassword
-  })
+  try {
+    await db.insert(users).values({
+      email,
+      password: hashedPassword
+    })
+  } catch (err: any) {
+    // if already registered
+    if (err?.cause?.code === '23505') {
+      return {
+        error: true,
+        message: 'An account is already registered.'
+      }
+    }
+
+    // if other error (general error) 
+    return {
+      error: true,
+      message: 'An error occurred.'
+    }
+  }
 
 }
