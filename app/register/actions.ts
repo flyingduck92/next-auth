@@ -3,6 +3,8 @@
 import db from '@/db/drizzle'
 import { passwordMatchSchema } from '@/validation/passwordMatchSchema'
 import z from 'zod'
+import { hash } from 'bcryptjs'
+import { users } from '@/db/usersSchema'
 
 export const registerUser = async (
   {
@@ -31,6 +33,12 @@ export const registerUser = async (
     }
   }
 
+  const saltRound = 10
+  const hashedPassword = await hash(password, saltRound)
 
+  await db.insert(users).values({
+    email,
+    password: hashedPassword
+  })
 
 }
