@@ -42,6 +42,7 @@ const Login = () => {
       })
     } else {
       router.push('/my-account')
+      // window.location.href = '/my-account'
     }
 
   }
