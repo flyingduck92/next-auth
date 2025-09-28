@@ -32,7 +32,10 @@ const loginUser = async ({
       redirect: false
     })
   } catch (error) {
-
+    return {
+      error: true,
+      message: 'Incorrect email/password'
+    }
   }
 
 }

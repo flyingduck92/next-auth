@@ -13,14 +13,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {}
       },
       async authorize(credentials) {
+        // get User from DB
         const [user] = await db.select()
           .from(users)
           .where(eq(users.email, credentials.email as string))
 
+        // console.log("DB password", user.password)
+        // console.log("Form password", credentials.password)
+
         if (!user) {
           throw new Error('Incorrect credentials')
         } else {
+          // Check password is correct or not
           const passwordCorrect = await compare(credentials.password as string, user.password!)
+
+          // console.log(`passwordCorrect: ${passwordCorrect}`)
 
           if (!passwordCorrect) {
             throw new Error('Incorrect credentials')
