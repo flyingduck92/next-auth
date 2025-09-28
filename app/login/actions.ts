@@ -1,8 +1,7 @@
 'use server'
 
-import db from '@/db/drizzle'
+import { signIn } from '@/auth'
 import { passwordSchema } from '@/validation/passwordSchema'
-import { hash } from 'bcryptjs'
 import z from 'zod'
 
 const loginUser = async ({
@@ -26,9 +25,15 @@ const loginUser = async ({
     }
   }
 
-  // const saltRound = 10
-  // const hashedPassword = await hash(password, saltRound)
+  try {
+    await signIn('credentials', {
+      email,
+      password,
+      redirect: false
+    })
+  } catch (error) {
 
+  }
 
 }
 
