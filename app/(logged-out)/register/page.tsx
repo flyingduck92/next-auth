@@ -41,7 +41,6 @@ const Register = () => {
       })
     }
 
-    console.log(response)
   }
 
   return (
