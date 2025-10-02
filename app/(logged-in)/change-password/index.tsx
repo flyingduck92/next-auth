@@ -8,6 +8,8 @@ import { passwordSchema } from '@/validation/passwordSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
+import changePasword from './actions'
+import { toast } from 'sonner'
 
 const changePasswordSchema = z
   .object({
@@ -26,9 +28,65 @@ const ChangePasswordForm = () => {
   })
 
   const handleSubmit = async (data: z.infer<typeof changePasswordSchema>) => {
-    setTimeout(() => {
-      console.log(data)
-    }, 2000)
+
+    const response = await changePasword({
+      currentPassword: data.currentPassword,
+      password: data.password,
+      passwordConfirm: data.passwordConfirm
+    })
+
+    if (response?.error) {
+      form.setError('root', {
+        message: response.message
+      })
+    } else {
+      form.reset()
+      toast.success('Password successfully changed', {
+        richColors: true
+      })
+
+      /*
+      Toast Docs:
+        types: 
+          toast('text') => default
+          toast.message() => description
+            toast.message('Event has been created', {
+              description: 'Monday, January 3rd at 6:00pm',
+            })
+
+          toast.success('text') => success
+          toast.info('text') => info
+          toast.warning('text') => warning
+          toast.error('text') => error
+
+          [opt- with action]: 
+            toast('Event has been created', {
+              action: {
+                label: 'Undo',
+                onClick: () => console.log('Undo')
+              },
+            })
+
+        position: 
+          "top-right" 
+          "top-center"
+          "top-left"
+          "bottom-right" (default)
+          "bottom-center"
+          "bottom-left"
+
+        richColors: 
+          true | false
+          
+        expand: 
+          true | false
+
+        src: 
+        https://sonner.emilkowal.ski/
+      
+      */
+    }
+
   }
 
   return (
@@ -39,7 +97,7 @@ const ChangePasswordForm = () => {
             <FormItem>
               <FormLabel>Current Password</FormLabel>
               <FormControl>
-                <Input {...field} type='password' placeholder='******' />
+                <Input {...field} type='password' placeholder='*****' />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -49,7 +107,7 @@ const ChangePasswordForm = () => {
             <FormItem>
               <FormLabel>New Password</FormLabel>
               <FormControl>
-                <Input {...field} placeholder='*****' type='password' />
+                <Input {...field} type='password' placeholder='*****' />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -59,12 +117,18 @@ const ChangePasswordForm = () => {
             <FormItem>
               <FormLabel>New Password Confirm</FormLabel>
               <FormControl>
-                <Input {...field} placeholder='*****' type='password' />
+                <Input {...field} type='password' placeholder='*****' />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
           />
+          {
+            !!form.formState.errors.root?.message &&
+            <FormMessage>
+              {form.formState.errors.root?.message}
+            </FormMessage>
+          }
           <Button type='submit'>Change Password</Button>
         </fieldset>
       </form>
