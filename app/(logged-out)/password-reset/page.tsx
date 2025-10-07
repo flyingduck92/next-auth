@@ -23,6 +23,7 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { useSearchParams } from "next/navigation"
 import z from "zod"
+import passwordReset from "./actions"
 
 const formSchema = z.object({
   email: z.email(),
@@ -41,7 +42,7 @@ const PasswordReset = () => {
   })
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    return null
+    await passwordReset(data.email)
   }
 
   return (
