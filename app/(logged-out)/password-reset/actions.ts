@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth"
 import db from "@/db/drizzle"
+import { passwordResetTokens } from "@/db/passwordResetTokensSchema"
 import { users } from "@/db/usersSchema"
 import { randomBytes } from "crypto"
 import { eq } from "drizzle-orm"
@@ -23,13 +24,29 @@ const passwordReset = async (emailAdrress: string) => {
     .from(users)
     .where(eq(users.email, emailAdrress))
 
-  // for security reason, if user don't exists tell email address doesn't exist in our db
-  // only show notification if account is exist, send passwordReset email
+  // for security reason, if no user don't tell email address doesn't exist in our db
+  // only show notification if account is exists, send passwordReset email
   if (!user) {
     return
   }
 
   const passwordResetToken = randomBytes(32).toString("hex")
+  const tokenExpiry = new Date(Date.now() + 3600000)
+
+  await db
+    .insert(passwordResetTokens)
+    .values({
+      userId: user.id,
+      token: passwordResetToken,
+      tokenExpiry,
+    })
+    .onConflictDoUpdate({
+      target: passwordResetTokens.userId,
+      set: {
+        token: passwordResetToken,
+        tokenExpiry,
+      },
+    })
 
   console.log({ passwordResetToken })
 }
