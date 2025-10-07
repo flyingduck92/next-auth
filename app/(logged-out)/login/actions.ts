@@ -1,19 +1,19 @@
-'use server'
+"use server"
 
-import { signIn } from '@/auth'
-import { passwordSchema } from '@/validation/passwordSchema'
-import z from 'zod'
+import { signIn } from "@/auth"
+import { passwordSchema } from "@/validation/passwordSchema"
+import z from "zod"
 
 const loginUser = async ({
-  email, password }
-  : {
-    email: string
-    password: string
-  }) => {
-
+  email,
+  password,
+}: {
+  email: string
+  password: string
+}) => {
   const loginSchema = z.object({
     email: z.email(),
-    password: passwordSchema
+    password: passwordSchema,
   })
 
   const loginValidation = loginSchema.safeParse({ email, password })
@@ -21,23 +21,22 @@ const loginUser = async ({
   if (!loginValidation.success) {
     return {
       error: true,
-      message: loginValidation.error.issues[0]?.message ?? 'An error occurred',
+      message: loginValidation.error.issues[0]?.message ?? "An error occurred",
     }
   }
 
   try {
-    await signIn('credentials', {
+    await signIn("credentials", {
       email,
       password,
-      redirect: false
+      redirect: false,
     })
   } catch (error) {
     return {
       error: true,
-      message: 'Incorrect email/password'
+      message: "Incorrect email/password",
     }
   }
-
 }
 
 export default loginUser
