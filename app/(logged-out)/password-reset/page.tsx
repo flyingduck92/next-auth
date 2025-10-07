@@ -34,7 +34,9 @@ const PasswordReset = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: decodeURIComponent(searchParams.get("email")) ?? "",
+      email: searchParams.get("email")
+        ? decodeURIComponent(searchParams.get("email")!)
+        : "",
     },
   })
 
