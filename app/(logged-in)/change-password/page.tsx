@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import ChangePasswordForm from "."
+import ChangePasswordForm from "./form"
 
 const ChangePassword = () => {
   return (

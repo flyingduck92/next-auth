@@ -3,6 +3,7 @@ import db from "@/db/drizzle"
 import { passwordResetTokens } from "@/db/passwordResetTokensSchema"
 import { eq } from "drizzle-orm"
 import Link from "next/link"
+import UpdatePasswordForm from "./form"
 
 const PasswordUpdate = async ({
   searchParams,
@@ -22,16 +23,18 @@ const PasswordUpdate = async ({
     const now = Date.now()
 
     if (
-      !!passwordResetToken.tokenExpiry &&
+      !!passwordResetToken?.tokenExpiry &&
       now < passwordResetToken.tokenExpiry.getTime()
     ) {
       isTokenValid = true
     }
   }
 
+  console.log(isTokenValid)
+
   return (
     <main className="flex items-center justify-center min-h-screen">
-      <Card className="w-[350px]">
+      <Card className={`w-[350px] ${isTokenValid ? `` : `gap-2`}`}>
         <CardHeader>
           <CardTitle>
             {isTokenValid
@@ -41,7 +44,7 @@ const PasswordUpdate = async ({
         </CardHeader>
         <CardContent>
           {isTokenValid ? (
-            <div>form</div>
+            <UpdatePasswordForm token={token ?? ""} />
           ) : (
             <Link href="/password-reset" className="underline">
               Request another password reset link

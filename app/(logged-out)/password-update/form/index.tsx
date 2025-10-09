@@ -11,32 +11,30 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { passwordMatchSchema } from "@/validation/passwordMatchSchema"
-import { passwordSchema } from "@/validation/passwordSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import z from "zod"
-import changePasword from "./actions"
+import updatePassword from "./actions"
 import { toast } from "sonner"
 
-const changePasswordSchema = z
-  .object({
-    currentPassword: passwordSchema,
-  })
-  .and(passwordMatchSchema)
+const updatePasswordSchema = passwordMatchSchema
 
-const ChangePasswordForm = () => {
-  const form = useForm<z.infer<typeof changePasswordSchema>>({
-    resolver: zodResolver(changePasswordSchema),
+type Props = {
+  token: string
+}
+
+const UpdatePasswordForm = ({ token }: Props) => {
+  const form = useForm<z.infer<typeof updatePasswordSchema>>({
+    resolver: zodResolver(updatePasswordSchema),
     defaultValues: {
-      currentPassword: "",
       password: "",
       passwordConfirm: "",
     },
   })
 
-  const handleSubmit = async (data: z.infer<typeof changePasswordSchema>) => {
-    const response = await changePasword({
-      currentPassword: data.currentPassword,
+  const handleSubmit = async (data: z.infer<typeof updatePasswordSchema>) => {
+    const response = await updatePassword({
+      token,
       password: data.password,
       passwordConfirm: data.passwordConfirm,
     })
@@ -47,7 +45,7 @@ const ChangePasswordForm = () => {
       })
     } else {
       form.reset()
-      toast.success("Password successfully changed", {
+      toast.success("Password successfully updated", {
         richColors: true,
       })
 
@@ -103,19 +101,6 @@ const ChangePasswordForm = () => {
         >
           <FormField
             control={form.control}
-            name="currentPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Current Password</FormLabel>
-                <FormControl>
-                  <Input {...field} type="password" placeholder="*****" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
@@ -150,4 +135,4 @@ const ChangePasswordForm = () => {
   )
 }
 
-export default ChangePasswordForm
+export default UpdatePasswordForm
