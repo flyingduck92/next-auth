@@ -4,6 +4,7 @@ import { passwordResetTokens } from "@/db/passwordResetTokensSchema"
 import { eq } from "drizzle-orm"
 import Link from "next/link"
 import UpdatePasswordForm from "./form"
+import { Frown } from "lucide-react"
 
 const PasswordUpdate = async ({
   searchParams,
@@ -30,16 +31,21 @@ const PasswordUpdate = async ({
     }
   }
 
-  console.log(isTokenValid)
-
   return (
     <main className="flex items-center justify-center min-h-screen">
       <Card className={`w-[350px] ${isTokenValid ? `` : `gap-2`}`}>
         <CardHeader>
           <CardTitle>
-            {isTokenValid
-              ? "Update Password"
-              : "Your password reset link is invalid or already expired"}
+            {isTokenValid ? (
+              "Update Password"
+            ) : (
+              <>
+                <Frown className="inline" />{" "}
+                <span>
+                  Your password reset link is invalid or already expired
+                </span>
+              </>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
