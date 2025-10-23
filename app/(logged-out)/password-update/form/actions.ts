@@ -2,8 +2,8 @@
 
 import { auth } from "@/auth"
 import db from "@/db/drizzle"
-import { passwordResetTokens } from "@/db/passwordResetTokensSchema"
 import { users } from "@/db/usersSchema"
+import { passwordResetTokens } from "@/db/passwordResetTokensSchema"
 import { passwordMatchSchema } from "@/validation/passwordMatchSchema"
 import { hash } from "bcryptjs"
 import { eq } from "drizzle-orm"
@@ -71,12 +71,12 @@ const updatePassword = async ({
     await db
       .update(users)
       .set({ password: hashedPassword })
-      .where(eq(users.id, passwordResetTokens.userId))
+      .where(eq(users.id, passwordResetToken.userId!))
 
     // remove token from passwordResetToken table
     await db
       .delete(passwordResetTokens)
-      .where(eq(passwordResetTokens.id, passwordResetTokens.id))
+      .where(eq(passwordResetTokens.id, passwordResetToken.id))
   }
 }
 

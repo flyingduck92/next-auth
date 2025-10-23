@@ -47,9 +47,7 @@ const ChangePasswordForm = () => {
       })
     } else {
       form.reset()
-      toast.success("Password successfully changed", {
-        richColors: true,
-      })
+      toast.success("Password successfully changed")
 
       /*
       Toast Docs:

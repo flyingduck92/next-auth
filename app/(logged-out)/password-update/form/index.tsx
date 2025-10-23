@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form"
 import z from "zod"
 import updatePassword from "./actions"
 import { toast } from "sonner"
+import Link from "next/link"
 
 const updatePasswordSchema = passwordMatchSchema
 
@@ -48,10 +49,8 @@ const UpdatePasswordForm = ({ token }: Props) => {
         message: response.message,
       })
     } else {
+      toast.success("Password successfully updated")
       form.reset()
-      toast.success("Password successfully updated", {
-        richColors: true,
-      })
 
       /*
       Toast Docs:
@@ -96,7 +95,15 @@ const UpdatePasswordForm = ({ token }: Props) => {
     }
   }
 
-  return (
+  return form.formState.isSubmitSuccessful ? (
+    <div>
+      You password has been updated.
+      <br />
+      <Link className="underline" href="/login">
+        Click here to login to your account
+      </Link>
+    </div>
+  ) : (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <fieldset
